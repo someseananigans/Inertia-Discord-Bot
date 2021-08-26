@@ -36,7 +36,11 @@ module.exports = {
             return res.json()
           })
           .then(metadata => {
-            const currentPrice = `${metadata.orders[0].current_price / 1000000000000000000}`
+            let currentPrice = 'N/A'
+            if (metadata.orders.length > 0) {
+              console.log('huh')
+              currentPrice = metadata.orders[0].current_price / 1000000000000000000
+            }
             const lastPrice = `${metadata.last_sale.total_price / 1000000000000000000}`
             const traitCount = metadata['collection']['stats']['count']
             const traits = metadata.traits.map(trait => {

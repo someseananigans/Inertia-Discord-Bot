@@ -25,7 +25,7 @@ module.exports = {
           let position = getKeyByValue(contracts, args[0])
           delete contracts[position]
           db.set('contracts', contracts)
-          return msg.channel.send(`**${position}** has been removed from the watchlsit`)
+          return position ? msg.channel.send(`**${position}** has been removed from the watchlist`) : msg.channel.send(`**${args}** is not present in watchlist`)
         }
       })
       .catch(err => console.log(err))
