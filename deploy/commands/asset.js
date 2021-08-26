@@ -13,7 +13,8 @@ module.exports = {
     }
 
 
-    fetch('/api/watchlist', settings)
+    fetch('http://localhost:3000/api/watchlist', settings)
+      .then(response => response.json())
       .then(watchlist => {
         if (!search) {
           return msg.channel.send(`No project name was provided. \nPlease use an existing contract name from the watch list. \n**Example:** *!asset cryptokitties 11*`)
@@ -37,7 +38,10 @@ module.exports = {
             return res.json()
           })
           .then(metadata => {
-            const currentPrice = `${metadata.orders[0].current_price / 1000000000000000000}`
+            let currentPrice = 'N/A'
+            if (metadata.orders.length > 0) {
+              currentPrice = `${metadata.orders[0].current_price / 1000000000000000000}`
+            }
             const lastPrice = `${metadata.last_sale.total_price / 1000000000000000000}`
             const traitCount = metadata['collection']['stats']['count']
             const traits = metadata.traits.map(trait => {
@@ -48,12 +52,12 @@ module.exports = {
               .setColor('#0099ff')
               .setTitle(`${metadata.name} [${metadata.token_id}]`)
               .setURL(metadata.permalink)
-              .addFields({ "name": "Price (ETH)", "value": currentPrice })
-              .addFields({ "name": "Last Transaction", "value": lastPrice })
+              .addFields({ name: "Price (ETH)", value: currentPrice })
+              .addFields({ name: "Last Transaction", value: lastPrice })
               .addFields(traits)
               .setImage(metadata.image_preview_url)
               .setTimestamp()
-            msg.channel.send(assetEmbed)
+            msg.channel.send({ embeds: [assetEmbed] })
           })
           .catch(err => {
             msg.channel.send(err.message)

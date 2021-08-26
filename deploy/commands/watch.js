@@ -27,16 +27,17 @@ module.exports = {
         return res.json()
       })
       .then((metadata) => {
-        return fetch('api/watchlist', settings)
+        return fetch('http://localhost:3000/api/watchlist', settings)
+          .then(response => response.json())
           .then(watchlist => {
             if (watchlist[metadata.name.toLowerCase()]) {
               return msg.channel.send(`Token already added: ${metadata.name}`)
             } else {
               let data = {
-                name: metadata.name.toLowerCase,
+                name: metadata.name.toLowerCase(),
                 key: args[0]
               }
-              fetch('api/watch', {
+              fetch('http://localhost:3000/api/watch', {
                 method: 'POST',
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(data)

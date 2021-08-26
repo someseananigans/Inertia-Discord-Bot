@@ -8,7 +8,6 @@ router.get('/watchlist', (req, res) => {
     .then(watches => {
       let watchlist = {}
       watches.forEach(watch => {
-        console.log(watch)
         watchlist[watch.name] = watch.key
       })
       res.json(watchlist)

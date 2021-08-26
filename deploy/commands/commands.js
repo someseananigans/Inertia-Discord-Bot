@@ -47,7 +47,7 @@ module.exports = {
       embed.addFields({ "name": `${command.name}`, "value": `- ${command.expl} \n${('`').toString()}${command.ie}${('`').toString()}` })
     })
 
-    msg.channel.send(embed)
+    msg.channel.send({ embeds: [embed] })
     // needs styling
   }
 }
