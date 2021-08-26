@@ -13,7 +13,7 @@ const fetch = require('node-fetch')
 const { prefix } = require('./config.json')
 const fs = require('fs')
 
-const client = new Client({ intents: [Intents.FLAGS.GUILD_MESSAGES] })
+const client = new Client({ intents: ['GUILD_MESSAGES', 'GUILDS', 'DIRECT_MESSAGES'] })
 client.commands = new Collection()
 client.cronJobs = new Collection()
 
@@ -34,26 +34,28 @@ for (const file of cronFiles) {
 
 client.on("ready", () => {
   console.log(`Logged in as ${client.user.tag}`)
-  client.cronJobs.forEach((value, key) => {
-    setInterval(() => {
-      let counter = 0
-      db.get("contracts")
-        .then(contracts => {
-          let inter = setInterval(() => {
-            if (counter < Object.keys(contracts).length) {
-              value.execute(client, Object.keys(contracts)[counter])
-            }
-            else {
-              clearInterval(inter)
-            }
-            counter++
-          }, 1000)
-        })
-    }, value.interval)
-  })
+  // client.cronJobs.forEach((value, key) => {
+  //   setInterval(() => {
+  //     let counter = 0
+  //     db.get("contracts")
+  //       .then(contracts => {
+  //         let inter = setInterval(() => {
+  //           if (counter < Object.keys(contracts).length) {
+  //             value.execute(client, Object.keys(contracts)[counter])
+  //           }
+  //           else {
+  //             clearInterval(inter)
+  //           }
+  //           counter++
+  //         }, 1000)
+  //       })
+  //   }, value.interval)
+  // })
 })
 
-client.on("message", async msg => {
+
+client.on('messageCreate', async msg => {
+  console.log('message')
   if (!msg.content.startsWith(prefix) || msg.author.bot) return
 
   const args = msg.content.toLowerCase().slice(prefix.length).trim().split(' ')
@@ -75,6 +77,7 @@ client.on("message", async msg => {
 })
 
 
+client.login(process.env.TOKEN)
 
 require('./db')
   .then(() => app.listen(process.env.PORT || PORT, () => {
@@ -82,4 +85,3 @@ require('./db')
   }))
   .catch(err => console.log(err))
 
-client.login(process.env.TOKEN)
