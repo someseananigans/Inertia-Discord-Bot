@@ -1,0 +1,6 @@
+{
+  "prefix": "!",
+  "openseaEventsUrl": "https://api.opensea.io/api/v1/events",
+  "openseaContractsUrl": "https://api.opensea.io/api/v1/asset_contract",
+  "openseaAssetsUrl": "https://api.opensea.io/api/v1/asset"
+}
