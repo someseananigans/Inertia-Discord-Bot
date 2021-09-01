@@ -45,9 +45,6 @@ Configurations are done via environment variables:
 | OPEN_SEA_API_KEY | Contact OpenSea to request an API key at https://docs.opensea.io/reference#request-an-api-key.  The bot will work without it, but heavy use may result in being blocked. |
 
 
-
-
-
 # Deployment
 ## Locally
 Clone repository and run:   
@@ -74,3 +71,7 @@ Replit should know to install necessary packages. Below are packages needed in t
 - node-fetch
 
 Using availale url when script is ran, you can continue to have bot running using [uptimerobot](https://uptimerobot.com/).
+
+# Pending
+## CronJobs (non-replit)
+Currently sales event updates are only available for replit deployment. Eventually, this sales cronjob will be available for normal deployment

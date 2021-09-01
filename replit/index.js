@@ -52,7 +52,7 @@ client.on("ready", () => {
         .then(contracts => {
           let inter = setInterval(() => {
             if (counter < Object.keys(contracts).length) {
-              value.execute(client, Object.keys(contracts)[counter])
+              value.execute(client, Object.values(contracts)[counter], Object.keys(contracts)[counter])
             }
             else {
               clearInterval(inter)

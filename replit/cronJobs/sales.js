@@ -10,7 +10,7 @@ module.exports = {
   description: 'sales bot',
   interval: 20000,
 
-  async execute(client, contract) {
+  async execute(client, contract, contractName) {
     if (lastTimeStamp == null) lastTimestamp = Math.floor(Date.now() / 1000) - 60
     let newTimeStamp = Math.floor(Date.now() / 1000) - 30
 
@@ -24,8 +24,8 @@ module.exports = {
 
 
     while (1) {
-      contract = contract.split(" ").join('-')
-      let url = `${openseaEventsUrl}?collection_slug=${contract}&event_type=successful&only_opensea=false&offset=${offset}&limit=50&occurred_after=${lastTimestamp}&occurred_before=${newTimeStamp}`;
+      // contract = contract.split(" ").join('-')
+      let url = `${openseaEventsUrl}?asset_contract_address=${contract}&event_type=successful&only_opensea=false&offset=${offset}&limit=50&occurred_after=${lastTimestamp}&occurred_before=${newTimeStamp}`;
       try {
         let res = await fetch(url, settings)
 
@@ -39,9 +39,15 @@ module.exports = {
 
         data = await res.json()
         if (data.asset_events.length == 0) {
-          console.log(`no events: ${contract}`)
+          console.log(`no events: ${contractName}`)
           break
         }
+
+        client.channels.fetch(process.env.DISCORD_SALES_CHANNEL)
+          .then(channel => {
+            channel.send(Date.now())
+          })
+          .catch(console.error)
 
         data.asset_events.forEach((event) => {
           if (event.asset) {
@@ -51,10 +57,11 @@ module.exports = {
               salesCashe.push(event.id)
               if (salesCashe.length > 20) salesCashe.shift()
             }
-
+            let focusName = event.asset.name ? event.asset.name : `${event.asset.collection.name} [${event.asset.token_id}]`
+            console.log(`${focusName} has just been sold for ${event.total_price / (1e18)}\u039E`)
             const embedMsg = new Discord.MessageEmbed()
               .setColor('#0099ff')
-              .setTitle(event.asset.name)
+              .setTitle(focusName)
               .setURL(event.asset.permalink)
               .setDescription(`has just been sold for ${event.total_price / (1e18)}\u039E`)
               .setThumbnail(event.asset.image_url)
@@ -63,7 +70,6 @@ module.exports = {
 
             client.channels.fetch(process.env.DISCORD_SALES_CHANNEL)
               .then(channel => {
-                console.log('pong')
                 channel.send(embedMsg)
               })
               .catch(console.error)
